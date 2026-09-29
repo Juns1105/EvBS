@@ -169,9 +169,7 @@ python scripts/blurring_model/train.py         --config configs/blurring_model/g
 
 For every GoPro blurry frame averaging sharp frames f_0..f_{N-1}, `prepare_gopro.py` computes the flow
 map (RAFT on the sharp frames), the event mask and FEDA over the event groups of f_0..f_{N-2}, and
-reports the normalization statistics in `stats.json`. It needs the FlyingThings model of
-[RAFT](https://github.com/princeton-vl/RAFT) (`raft-things.pth` in its `models.zip`) in
-`checkpoints/raft-things.pth`.
+reports the normalization statistics in `stats.json`.
 
 ## Citation
 
