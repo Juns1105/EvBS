@@ -9,12 +9,10 @@ official repository only offers Baidu Netdisk links, so it has to be downloaded 
 """
 import argparse
 import hashlib
-import io
 import os
 import shutil
 import sys
 import urllib.request
-import zipfile
 
 RELEASE_URL = 'https://github.com/Juns1105/EvBS/releases/download/v1.0/{file}'
 
@@ -33,12 +31,6 @@ CHECKPOINTS = {
         'what': 'E-RAFT trained on DSEC (Gehrig et al., 3DV 2021)',
         'url': 'https://download.ifi.uzh.ch/rpg/ERAFT/checkpoints/dsec.tar',
         'sha256': '82dc19a46f7a3b21121be7e99079ff6a6d14b1525ca74264be86ca93285bae49',
-    },
-    'raft-things.pth': {
-        'what': 'RAFT trained on FlyingThings (Teed and Deng, ECCV 2020); only needed to retrain ID-Blau',
-        'url': 'https://dl.dropboxusercontent.com/s/4j4z58wuv8o0mfz/models.zip',
-        'zip_member': 'raft-things.pth',
-        'sha256': 'fcfa4125d6418f4de95d84aec20a3c5f4e205101715a79f193243c186ac9a7e1',
     },
     'maenet_gopro.pth': {
         'what': 'MAENet trained on GoPro (Sun et al., ECCV 2024); only needed for fine-tuning',
@@ -82,10 +74,6 @@ def main():
                 missing.append(name)
                 continue
             data = fetch(RELEASE_URL.format(file=name) if info.get('release') else info['url'])
-            if 'zip_member' in info:
-                with zipfile.ZipFile(io.BytesIO(data)) as z:
-                    member = next(m for m in z.namelist() if m.endswith(info['zip_member']))
-                    data = z.read(member)
             tmp = path + '.part'
             with open(tmp, 'wb') as f:
                 f.write(data)

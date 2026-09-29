@@ -59,7 +59,6 @@ pip install -r requirements.txt
 | `bme_events.pth` | Blur Magnitude Estimator (RGB + event count map), retrained for EvBS | source detection | [release v1.0](https://github.com/Juns1105/EvBS/releases/download/v1.0/bme_events.pth) |
 | `idblau_evbs.pth` | ID-Blau D_ψ with flow-map + FEDA conditions, retrained on GoPro | blur synthesis | [release v1.0](https://github.com/Juns1105/EvBS/releases/download/v1.0/idblau_evbs.pth) |
 | `eraft_dsec.tar` | E-RAFT trained on DSEC | blur synthesis (event flow) | [E-RAFT](https://github.com/uzh-rpg/E-RAFT) |
-| `raft-things.pth` | RAFT trained on FlyingThings | retraining ID-Blau only | [RAFT](https://github.com/princeton-vl/RAFT) |
 | `maenet_gopro.pth` | MAENet trained on GoPro | fine-tuning only | manual, see below |
 
 ```bash
@@ -170,7 +169,9 @@ python scripts/blurring_model/train.py         --config configs/blurring_model/g
 
 For every GoPro blurry frame averaging sharp frames f_0..f_{N-1}, `prepare_gopro.py` computes the flow
 map (RAFT on the sharp frames), the event mask and FEDA over the event groups of f_0..f_{N-2}, and
-reports the normalization statistics in `stats.json`.
+reports the normalization statistics in `stats.json`. It needs the FlyingThings model of
+[RAFT](https://github.com/princeton-vl/RAFT) (`raft-things.pth` in its `models.zip`) in
+`checkpoints/raft-things.pth`.
 
 ## Citation
 
