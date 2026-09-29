@@ -1,8 +1,8 @@
 """Download the checkpoints into checkpoints/ and verify their SHA-256.
 
-EvBS checkpoints (retrained BME and ID-Blau) are hosted on the Hugging Face Hub; third-party
-checkpoints are fetched from their official locations. MAENet is not redistributed: its official
-repository only offers Baidu Netdisk links, so it has to be downloaded manually.
+EvBS checkpoints (retrained BME and ID-Blau) are attached to the GitHub release of this repository;
+third-party checkpoints are fetched from their official locations. MAENet is not redistributed: its
+official repository only offers Baidu Netdisk links, so it has to be downloaded manually.
 
     python scripts/download_checkpoints.py                 # everything available
     python scripts/download_checkpoints.py --only bme_events.pth idblau_evbs.pth
@@ -16,18 +16,17 @@ import sys
 import urllib.request
 import zipfile
 
-HF_REPO = ''   # TODO: Hugging Face model repository (<user>/<repo>) holding the EvBS weights
-HF_URL = 'https://huggingface.co/{repo}/resolve/main/{file}'
+RELEASE_URL = 'https://github.com/Juns1105/EvBS/releases/download/v1.0/{file}'
 
 CHECKPOINTS = {
     'bme_events.pth': {
         'what': 'Blur Magnitude Estimator retrained with RGB + event count map (EvBS)',
-        'hf': True,
+        'release': True,
         'sha256': '3e075117aa4f111e21d3cabab8ebc37c704f5ab7f4e091a78727a837390e851a',
     },
     'idblau_evbs.pth': {
         'what': 'ID-Blau blurring model retrained with flow-map + FEDA conditions (EvBS)',
-        'hf': True,
+        'release': True,
         'sha256': 'a2ddceed9b6903e3a89c41907c3ce273018e67d4ee29d8f940085e77c4ca9f56',
     },
     'eraft_dsec.tar': {
@@ -68,7 +67,6 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--dir', default='checkpoints')
     parser.add_argument('--only', nargs='*', default=None, choices=sorted(CHECKPOINTS))
-    parser.add_argument('--hf-repo', default=HF_REPO)
     args = parser.parse_args()
     os.makedirs(args.dir, exist_ok=True)
 
@@ -83,11 +81,7 @@ def main():
                 print(f'  download manually {info["manual"]} and save it as {path}')
                 missing.append(name)
                 continue
-            if info.get('hf') and not args.hf_repo:
-                print('  no Hugging Face repository configured (HF_REPO / --hf-repo)')
-                missing.append(name)
-                continue
-            data = fetch(HF_URL.format(repo=args.hf_repo, file=name) if info.get('hf') else info['url'])
+            data = fetch(RELEASE_URL.format(file=name) if info.get('release') else info['url'])
             if 'zip_member' in info:
                 with zipfile.ZipFile(io.BytesIO(data)) as z:
                     member = next(m for m in z.namelist() if m.endswith(info['zip_member']))

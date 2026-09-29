@@ -5,8 +5,8 @@
 
 | File | Model | Source |
 |---|---|---|
-| `bme_events.pth` | Blur Magnitude Estimator (RGB + event count map), retrained for EvBS | Hugging Face Hub |
-| `idblau_evbs.pth` | ID-Blau blurring model with flow-map + FEDA conditions, retrained for EvBS | Hugging Face Hub |
+| `bme_events.pth` | Blur Magnitude Estimator (RGB + event count map), retrained for EvBS | [GitHub release v1.0](https://github.com/Juns1105/EvBS/releases/tag/v1.0) |
+| `idblau_evbs.pth` | ID-Blau blurring model with flow-map + FEDA conditions, retrained for EvBS | [GitHub release v1.0](https://github.com/Juns1105/EvBS/releases/tag/v1.0) |
 | `eraft_dsec.tar` | E-RAFT trained on DSEC | [E-RAFT](https://github.com/uzh-rpg/E-RAFT) |
 | `raft-things.pth` | RAFT (FlyingThings), for retraining ID-Blau only | [RAFT](https://github.com/princeton-vl/RAFT) |
 | `maenet_gopro.pth` | MAENet trained on GoPro, for fine-tuning only | GoPro model of the [official MAENet repository](https://github.com/ZhijingS/DA_event_deblur) (Baidu Netdisk, code `xeuh`); download manually and rename |
