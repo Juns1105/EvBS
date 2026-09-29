@@ -50,11 +50,34 @@ Tested with Python 3.9, PyTorch 2.0.1 and CUDA 11.8.
 
 ```bash
 pip install -r requirements.txt
-python scripts/download_checkpoints.py
 ```
 
-`checkpoints/README.md` lists the weights. The GoPro-pretrained MAENet (only needed for fine-tuning)
-is not redistributed here: download the GoPro model from the
+## Pretrained models
+
+| File | Model | Needed for | Download |
+|---|---|---|---|
+| `bme_events.pth` | Blur Magnitude Estimator (RGB + event count map), retrained for EvBS | source detection | [release v1.0](https://github.com/Juns1105/EvBS/releases/download/v1.0/bme_events.pth) |
+| `idblau_evbs.pth` | ID-Blau D_ψ with flow-map + FEDA conditions, retrained on GoPro | blur synthesis | [release v1.0](https://github.com/Juns1105/EvBS/releases/download/v1.0/idblau_evbs.pth) |
+| `eraft_dsec.tar` | E-RAFT trained on DSEC | blur synthesis (event flow) | [E-RAFT](https://github.com/uzh-rpg/E-RAFT) |
+| `raft-things.pth` | RAFT trained on FlyingThings | retraining ID-Blau only | [RAFT](https://github.com/princeton-vl/RAFT) |
+| `maenet_gopro.pth` | MAENet trained on GoPro | fine-tuning only | manual, see below |
+
+```bash
+python scripts/download_checkpoints.py      # all except MAENet, into checkpoints/, with SHA-256 check
+```
+
+The EvBS weights can also be downloaded directly:
+
+```bash
+mkdir -p checkpoints
+wget -P checkpoints https://github.com/Juns1105/EvBS/releases/download/v1.0/bme_events.pth
+wget -P checkpoints https://github.com/Juns1105/EvBS/releases/download/v1.0/idblau_evbs.pth
+```
+
+`idblau_evbs.pth` was trained with `configs/blurring_model/gopro.yaml`
+(see [Retraining the blurring model](#retraining-the-blurring-model)).
+
+The GoPro-pretrained MAENet is not redistributed here: download the GoPro model from the
 [official MAENet repository](https://github.com/ZhijingS/DA_event_deblur) (Baidu Netdisk, extraction code
 `xeuh`), save it as `checkpoints/maenet_gopro.pth` and run `download_checkpoints.py` again to verify it.
 
