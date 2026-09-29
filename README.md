@@ -149,18 +149,6 @@ For every GoPro blurry frame averaging sharp frames f_0..f_{N-1}, `prepare_gopro
 map (RAFT on the sharp frames), the event mask and FEDA over the event groups of f_0..f_{N-2}, and
 reports the normalization statistics in `stats.json`.
 
-## Results of this release
-
-MAENet on FEVD, all 2,390 test frames, default configs (one run, seed 2023):
-
-| | PSNR | SSIM |
-|---|---|---|
-| GoPro-pretrained MAENet | 21.12 | 0.552 |
-| + EvBS fine-tuning | 28.34 | 0.835 |
-
-Runtime on one TITAN RTX: about 1 min per 299-frame video for source detection, 1 min for intrinsic
-and 1 min for extrinsic synthesis; fine-tuning takes 25 min and a full evaluation 40 min.
-
 ## Citation
 
 ```bibtex
