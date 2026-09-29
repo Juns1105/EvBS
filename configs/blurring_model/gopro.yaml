@@ -1,0 +1,50 @@
+# Retraining the blurring model D_psi (ID-Blau) on GoPro with synthetic events (Sec. 4.1).
+# Condition = [sharp C (3), flow map F (3), FEDA E (1)]. The released checkpoint
+# checkpoints/idblau_evbs.pth was trained with these settings.
+
+data:
+  origin_root: data/GOPRO_Large_all        # <split>/<video>/<frame>.png (240 fps sharp frames)
+  composite_root: data/GOPRO_Large         # <split>/<video>/blur/<name>.png
+  event_root: data/GOPRO_events            # <split>/<video>/events/<frame>.npz (synthetic)
+  meta_dir: assets/gopro                    # <split>_composite_img_frames.json
+  condition_root: outputs/blurring_model/gopro_conditions   # written by prepare_gopro.py
+  height: 720
+  width: 1280
+
+raft:                            # image-based RAFT on sharp frames for the training flow maps
+  checkpoint: checkpoints/raft-things.pth
+  iters: 20
+
+feda_alpha: 0.1
+
+normalization:                   # train-split statistics used by the released checkpoint;
+  flow_norm: 143                 # prepare_gopro.py reports them again for new conditions
+  event_min: -119
+  event_max: 63
+
+model:
+  num_timesteps: 2000
+  beta_1: 1.0e-6
+  beta_T: 1.0e-2
+  base_channels: 64
+  channel_mults: [1, 2, 3]
+  num_res_blocks: 2
+  time_dim: 256
+  dropout: 0.0
+  criterion: l1                  # Charbonnier
+
+train:
+  output_dir: outputs/blurring_model/idblau
+  epochs: 5000
+  batch_size: 16
+  crop_size: 256
+  lr: 1.0e-4
+  min_lr: 1.0e-5
+  scheduler: null                # null or cosine
+  grad_clip: 1.0
+  num_workers: 4
+  val_every: 50                  # epochs
+  val_samples: 10                # full-resolution test images per validation
+  ckpt_every: 200
+  sample_timesteps: 20
+  seed: 2023

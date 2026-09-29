@@ -1,0 +1,44 @@
+# Fine-tuning MAENet (GoPro-pretrained) on EvBS pairs synthesized from FEVD (REVD), Sec. 4.1:
+# 10 epochs, Charbonnier loss, Adam, learning rate cosine-annealed from 1e-5 to 1e-7.
+
+dataset:
+  root: data/FEVD
+  split: test
+  height: 768
+  width: 1024
+  blur_dir: blur_down
+  event_dir: warped_events
+  gt_dir: gt_down_corrected          # ground truth used for evaluation only
+
+synthesis_dir: outputs/synthesis/FEVD   # output_dir of configs/synthesis/fevd.yaml
+kinds: [intrinsic, extrinsic]
+intrinsic_radius: 2                  # intrinsic pairs use the original events of frames t-2..t+1
+
+representation: da                   # da: MAENet Algorithm 1 (deviation accumulation)
+                                     # da_asynav: variant of the MAENet data-preparation code
+
+model:
+  checkpoint: checkpoints/maenet_gopro.pth
+  width: 64
+  middle_blk_num: 3
+  enc_blk_nums: [2, 2, 2]
+  dec_blk_nums: [2, 2, 2]
+  num_heads: [2, 4, 4]
+  ev_chn: 6
+
+train:
+  epochs: 10
+  batch_size: 1
+  crop_size: 192
+  lr: 1.0e-5
+  min_lr: 1.0e-7
+  grad_clip: 20
+  num_workers: 4
+  seed: 2023
+
+eval:
+  epochs: [0, 5, 10]                 # 0 = pre-trained model before fine-tuning
+  frame_step: 1                      # evaluate every n-th test frame
+  save_images: 4
+
+output_dir: outputs/finetune/maenet_fevd

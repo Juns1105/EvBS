@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.hypothesis/
+# local data, checkpoints and results (see README)
+/data
+/outputs
+checkpoints/*
+!checkpoints/README.md
+*.pth
+*.tar

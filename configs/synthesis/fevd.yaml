@@ -1,0 +1,68 @@
+# EvBS blur synthesis on FEVD (the REVD benchmark of the paper).
+# Defaults follow Sec. 4.1: r = 0.15, n = 2, [tau_low, tau_high] = [15, 30] deg,
+# 256x256 patches with stride 64, initial tau = 0.05, NMS IoU 0.3, alpha = beta = 0.5,
+# plus a spatio-temporal NMS across frames (dse.temporal_nms_frames; 0 = as in the paper).
+
+dataset:
+  root: data/FEVD                      # <root>/<split>/<video>/{blur_down,warped_events}
+  split: test
+  height: 768
+  width: 1024
+  blur_dir: blur_down
+  event_dir: warped_events
+
+output_dir: outputs/synthesis/FEVD   # sources.json, intrinsic/, extrinsic/, cache/
+
+checkpoints:
+  eraft: checkpoints/eraft_dsec.tar
+  bme: checkpoints/bme_events.pth
+  idblau: checkpoints/idblau_evbs.pth
+
+eraft:
+  num_bins: 15
+  iters: 12
+  full_frame_batch: 2          # E-RAFT batch size at full resolution
+  patch_batch: 16              # E-RAFT batch size on 256x256 patches
+
+dse:                           # Dual Source Extractor (Sec. 3.1)
+  ratio: 0.15                  # r: sources per video = int(r * #frames)
+  patch_size: 256
+  stride: 64
+  tau_init: 0.05               # initial percentile threshold
+  tau_max: 0.1                 # tau is bisected upwards towards this value
+  max_iters: 20
+  count_tolerance: 2           # accept when #content >= target - tolerance
+  nms_iou: 0.3
+  temporal_nms_frames: 5       # spatio-temporal NMS across frames: skip a source if a selected one
+  temporal_nms_iou: 0.3        # lies within 5 frames with IoU >= 0.3 (0 disables, as in the paper)
+  weight_count: 0.5            # alpha in Eq. 1
+  weight_magnitude: 0.5        # beta in Eq. 1
+  count_norm: 32               # C_E normalization (BME input and Eq. 1)
+  magnitude_scale: 0.5608      # 143 / 255, BME output scale used in Eq. 1
+  min_event_ratio: 0.001       # content windows need >= this fraction of the frame's events
+  ms_cos_threshold: 0.9        # MS Selector threshold (Supp. B)
+
+blurring:                      # retrained ID-Blau D_psi
+  flow_norm: 143               # magnitude normalization used in training
+  event_min: -119              # FEDA normalization range used in training
+  event_max: 63
+  feda_alpha: 0.1              # FEDA weight d = p * (1 + alpha * |Q|), as in training
+  sample_timesteps: 20
+  batch_size: 8
+  seed: 2023
+
+intrinsic:
+  radius: 2                    # window [t - 2, t + 2]
+
+extrinsic:
+  angle_range: [15, 30]        # [tau_low, tau_high] in degrees
+  relax_range: [10, 80]        # if no motion source passes, retry once with the midpoints
+                               # towards these bounds (null to disable)
+  top_n: 2                     # n extrinsic pairs per content source, ranked by MCS
+  same_video_only: true        # motion sources are taken from the content source's video
+  gate_min_mag: 0.01           # min |F| for the mean motion vectors (angle gate, v_M)
+  mcs_min_mag: 0.1             # min |F| for the orientations in MCS (Eq. 5)
+  feda_alpha: null             # null = blurring.feda_alpha. The paper experiments used 1.0 here
+                               # (outside the training range), which gives noticeably stronger blur.
+
+save_visualizations: true
