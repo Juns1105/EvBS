@@ -188,7 +188,6 @@ reports the normalization statistics in `stats.json`.
 This code builds on [ID-Blau](https://github.com/plusgood-steven/ID-Blau),
 [DADeblur](https://github.com/Jin-Ting-He/DADeblur) and its [BME](https://github.com/Jin-Ting-He/BME),
 [E-RAFT](https://github.com/uzh-rpg/E-RAFT) (MIT, `evbs/models/eraft/LICENSE`),
-[RAFT](https://github.com/princeton-vl/RAFT) (BSD-3-Clause, `evbs/models/raft/LICENSE`) and
 [MAENet](https://github.com/ZhijingS/DA_event_deblur) (MIT, network in `evbs/models/maenet.py`).
 
 ## License
