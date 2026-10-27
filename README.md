@@ -4,7 +4,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2608.08066-b31b1b)](https://arxiv.org/abs/2608.08066)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-Official code for **EvBS** (ACM MM 2026) · [Paper](https://arxiv.org/abs/2608.08066)
+Official code for **EvBS** (ACM MM 2026).
 
 EvBS adapts a pre-trained deblurring model to a target domain by synthesizing blur–sharp training
 pairs from the target data itself. Events decouple motion from content, so a pseudo-sharp patch can
