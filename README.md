@@ -6,6 +6,8 @@
 
 Official code for **EvBS** (ACM MM 2026).
 
+<p align="center"><img src="assets/fig1.png" alt="EvBS: intrinsic and extrinsic blur synthesis from events" width="100%"></p>
+
 EvBS adapts a pre-trained deblurring model to a target domain by synthesizing blur–sharp training
 pairs from the target data itself. Events decouple motion from content, so a pseudo-sharp patch can
 be blurred with its own motion (**intrinsic blur**) or with motion transferred from another patch
