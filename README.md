@@ -1,7 +1,6 @@
 # EvBS: Event-guided Blur Synthesis for Domain-adaptive Motion Deblurring
 
-Official code for **EvBS** (ACM MM 2026) · [arXiv:2608.08066](https://arxiv.org/abs/2608.08066) ·
-[DOI 10.1145/3767308.3835301](https://doi.org/10.1145/3767308.3835301)
+Official code for **EvBS** (ACM MM 2026) · [Paper](https://arxiv.org/abs/2608.08066)
 
 EvBS adapts a pre-trained deblurring model to a target domain by synthesizing blur–sharp training
 pairs from the target data itself. Events decouple motion from content, so a pseudo-sharp patch can
